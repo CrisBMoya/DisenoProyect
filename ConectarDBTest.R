@@ -1,26 +1,53 @@
 
 library(RMySQL)
 library(DBI)
+library(tidyverse)
+
+#Clase NuevoUsuario
+NuevoUsuario=setClass(Class="NuevoUsuario", slots=list(
+  ID="numeric",
+  Nombre="character",
+  Apellido="character",
+  Usuario="character",
+  FechaNacimiento="Date",
+  Password="character"
+))
+
+#Pasar clase NuevoUsuario a Tabla
+S4DF=function(DF){
+  DF=tibble("ID"=DF@ID,
+            "Nombre"=DF@Nombre,
+            "Apellido"=DF@Apellido,
+            "Usuario"=DF@Usuario,
+            "FechaNacimiento"=DF@FechaNacimiento,
+            "Password"=DF@Password)
+  rownames(DF)=NULL
+  return(DF)
+}
 
 
 #Abrir conexion a database
-DB = dbConnect(MySQL(), user='root', password='', dbname='test', host='localhost')
+DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
 
 #Listar tablas en la DB
 dbListTables(DB)
 
 #Listar campos en la tabla
-dbListFields(conn=DB, name='infogestion')
+dbListFields(conn=DB, name='users')
 
 #Extraer info de tabla
-tempDF=dbReadTable(conn=DB, name="users")
-tempDF
+UsersDF=dbReadTable(conn=DB, name="users")
+
 
 #Exportar tabla a la BD
-tempDF=rbind(tempDF, data.frame("uid"=3, "username"="Normal", 
-                         "password"="123456", 
-                         "email"="mail@mail.cl", 
-                         "name"="UsuarioTest", 
-                         "profile_pic"="notengo"))
-
 dbWriteTable(conn=DB, name="users", value=tempDF, overwrite=TRUE)
+
+
+#Usuario nuevo
+Temp=S4DF(DF=NuevoUsuario(ID=c(1,2), Nombre=c("Prueba","Prueba2"), Apellido=c("Prueba","Prueba"),
+                          Usuario=c("P1","P2"),
+                          FechaNacimiento=c(as.Date("2010/01/01"), as.Date("1992/01/01")),
+                          Password=c("ABC123456","BCD123456")))
+
+dbWriteTable(conn=DB, name="users", value=Temp, append=TRUE)
+
