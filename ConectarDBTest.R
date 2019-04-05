@@ -25,6 +25,23 @@ S4DF=function(DF){
   return(DF)
 }
 
+#Crear usuarios
+Temp=S4DF(DF=NuevoUsuario(ID=c(1,2), Nombre=c("Prueba","Prueba2"), Apellido=c("Prueba","Prueba"),
+                          Usuario=c("P1","P2"),
+                          FechaNacimiento=c(as.Date("2010/01/01"), as.Date("1992/01/01")),
+                          Password=c("ABC123456","BCD123456")))
+
+#Abrir conexion a database
+DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
+
+#Exportar tabla a la BD
+dbWriteTable(conn=DB, name="users", value=Temp, overwrite=TRUE)
+
+#Desconectar
+dbDisconnect(conn=DB)
+
+####################
+####################
 
 #Abrir conexion a database
 DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
@@ -38,16 +55,8 @@ dbListFields(conn=DB, name='users')
 #Extraer info de tabla
 UsersDF=dbReadTable(conn=DB, name="users")
 
-
 #Exportar tabla a la BD
 dbWriteTable(conn=DB, name="users", value=tempDF, overwrite=TRUE)
 
 
-#Usuario nuevo
-Temp=S4DF(DF=NuevoUsuario(ID=c(1,2), Nombre=c("Prueba","Prueba2"), Apellido=c("Prueba","Prueba"),
-                          Usuario=c("P1","P2"),
-                          FechaNacimiento=c(as.Date("2010/01/01"), as.Date("1992/01/01")),
-                          Password=c("ABC123456","BCD123456")))
-
-dbWriteTable(conn=DB, name="users", value=Temp, append=TRUE)
 
