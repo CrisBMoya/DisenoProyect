@@ -32,7 +32,7 @@ Temp=S4DF(DF=NuevoUsuario(ID=c(1,2), Nombre=c("Prueba","Prueba2"), Apellido=c("P
                           Password=c("ABC123456","BCD123456")))
 
 #Abrir conexion a database
-DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
+DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb2', host='localhost')
 
 #Exportar tabla a la BD
 dbWriteTable(conn=DB, name="users", value=Temp, overwrite=TRUE)

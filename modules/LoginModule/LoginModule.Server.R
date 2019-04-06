@@ -10,7 +10,7 @@ LoginModule.Server=function(input, output, session,
   try(expr=dbDisconnect(conn=DB), silent=TRUE)
   
   #Abrir conexion a database
-  DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
+  DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb2', host='localhost')
   
   #Extraer info de tabla
   UsersDF=dbReadTable(conn=DB, name="users")
