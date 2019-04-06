@@ -1,5 +1,3 @@
-library(shiny)
-
 options(shiny.port = 7775)
 shiny::runApp(appDir = "~/DisenoProyect/index", port = getOption("shiny.port"),
        launch.browser = getOption("shiny.launch.browser", interactive()),

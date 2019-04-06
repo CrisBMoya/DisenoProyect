@@ -1,6 +1,7 @@
 #Server Index Page
 source(file="~/DisenoProyect/modules/LoginModule/LoginModule.Server.R")
 source(file="~/DisenoProyect/modules/OtherModule/OtherPageUI.R")
+source(file="~/DisenoProyect/modules/QRModule/QRModule.UI.R")
 
 shinyServer(function(input, output, session){
   
@@ -19,7 +20,7 @@ shinyServer(function(input, output, session){
       removeUI(selector="#LoginUI")
       
       #Generar UI de la pagina siguiente
-      output$Other=renderUI({OtherPage.UI(id="OtherPageUI")})
+      output$Other=renderUI({LoginModule.UI(id="QRModuleUI")})
       
     }else{
       
