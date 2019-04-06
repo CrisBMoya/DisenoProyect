@@ -1,4 +1,4 @@
-LoginModule.UI=function(id, label="QRModuleUI"){
+QRModule.UI=function(id, label="QRModuleUI"){
   ns=NS(id)
   
   

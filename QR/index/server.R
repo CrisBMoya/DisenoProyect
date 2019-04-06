@@ -1,7 +1,5 @@
 #Server Index Page
-source(file="~/DisenoProyect/modules/LoginModule/LoginModule.Server.R")
-source(file="~/DisenoProyect/modules/OtherModule/OtherPageUI.R")
-source(file="~/DisenoProyect/modules/QRModule/QRModule.UI.R")
+source(file="~/DisenoProyect/QR/modules/LoginModule/LoginModule.Server.R")
 
 shinyServer(function(input, output, session){
   
@@ -11,7 +9,8 @@ shinyServer(function(input, output, session){
   
   #Observar Boton de Login
   observeEvent(input$LoginBtn, {
-    ServerResponse=callModule(module=LoginModule.Server, id="", Usuario=UserReactive(), Clave=ClaveReactive())
+    ServerResponse=callModule(module=LoginModule.Server, id="", 
+                              Usuario=UserReactive(), Clave=ClaveReactive())
     
     #Si la clave ingresada es correcta se remueve la UI de login y se ingresa la de la pagina siguiente
     if(unlist(ServerResponse)=="OK"){
@@ -20,7 +19,9 @@ shinyServer(function(input, output, session){
       removeUI(selector="#LoginUI")
       
       #Generar UI de la pagina siguiente
-      output$Other=renderUI({LoginModule.UI(id="QRModuleUI")})
+      source(file="~/DisenoProyect/modules/QRModule/QRModule.Server.R", local=TRUE)
+      output$QRModuleUI=renderUI({QRModule.UI(id="QRModuleUI")})
+      
       
     }else{
       

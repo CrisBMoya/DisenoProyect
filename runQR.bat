@@ -1,0 +1,1 @@
+Rscript "C:\Users\Tobal\Documents\DisenoProyect\runQR.R"

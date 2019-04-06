@@ -9,6 +9,7 @@ NuevoUsuario=setClass(Class="NuevoUsuario", slots=list(
   Nombre="character",
   Apellido="character",
   Usuario="character",
+  Email="character",
   FechaNacimiento="Date",
   Password="character"
 ))
@@ -19,6 +20,7 @@ S4DF=function(DF){
             "Nombre"=DF@Nombre,
             "Apellido"=DF@Apellido,
             "Usuario"=DF@Usuario,
+            "Email"=DF@Email,
             "FechaNacimiento"=DF@FechaNacimiento,
             "Password"=DF@Password)
   rownames(DF)=NULL
@@ -28,11 +30,12 @@ S4DF=function(DF){
 #Crear usuarios
 Temp=S4DF(DF=NuevoUsuario(ID=c(1,2), Nombre=c("Prueba","Prueba2"), Apellido=c("Prueba","Prueba"),
                           Usuario=c("P1","P2"),
+                          Email=c("qrdbtest@yopmail.com","otromailrandom@yopmail.com"),
                           FechaNacimiento=c(as.Date("2010/01/01"), as.Date("1992/01/01")),
                           Password=c("ABC123456","BCD123456")))
 
 #Abrir conexion a database
-DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb2', host='localhost')
+DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
 
 #Exportar tabla a la BD
 dbWriteTable(conn=DB, name="users", value=Temp, overwrite=TRUE)

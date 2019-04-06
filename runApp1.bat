@@ -1,1 +1,0 @@
-Rscript "C:\Users\Tobal\Documents\DisenoProyect\runApp1.R"
