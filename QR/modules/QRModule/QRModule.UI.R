@@ -27,3 +27,4 @@ QRModule.UI=function(id, label="QRModuleUI"){
     )
   })
 }
+
