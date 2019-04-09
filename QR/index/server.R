@@ -19,7 +19,7 @@ shinyServer(function(input, output, session){
       removeUI(selector="#LoginUI")
       
       #Generar UI de la pagina siguiente
-      source(file="~/DisenoProyect/modules/QRModule/QRModule.Server.R", local=TRUE)
+      source(file="~/DisenoProyect/QR/modules/QRModule/QRModule.Server.R", local=TRUE)
       output$QRModuleUI=renderUI({QRModule.UI(id="QRModuleUI")})
       
       
