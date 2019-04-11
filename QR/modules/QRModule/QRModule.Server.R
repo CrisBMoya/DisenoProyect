@@ -1,44 +1,107 @@
-#Dummy
+#Library
 library(qrcode)
 library(ggplot2)
 library(reshape2)
+library(shinyjs)
+library(shinyalert)
 
-#Data
-Nombre=reactive({input$Txt1})
-Fecha=reactive({input$Date1})
-TxtString=reactive({paste0(Nombre(), Fecha())})
+#Habilitar javascript
+useShinyjs()
 
-#When one of the analysis is chosen
+#Desconectar DB en caso de que tenga conexion abierta
+try(expr=dbDisconnect(conn=DB), silent=TRUE)
+
+#Abrir conexion a database
+DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
+
+#Extraer info de tabla de pasajes
+PasajesDF=dbReadTable(conn=DB, name="pasajes")
+
+#Desconectar DB en caso de que tenga conexion abierta
+try(expr=dbDisconnect(conn=DB), silent=TRUE)
+
+#Tomar nombre de usuario desde fuente del source
+User=commandArgs()$User
+
+#Match entre usuario logeado y usuarios en DB de pasajes
+PasajeInfo=reactive({PasajesDF[PasajesDF$Usuario %in% User,]})
+
+#Generar lista de opciones de RadioButtons
+ListaOpciones=as.list(1:nrow(PasajeInfo()))
+names(ListaOpciones)=paste0(PasajeInfo()$Origen, " ",
+                            PasajeInfo()$Destino, " ",
+                            PasajeInfo()$Fecha)
+
+#RadioButtons para elegir el pasaje a generar QR
+output$QRList=renderUI({
+  radioButtons(inputId="QRSel", label="QRList", 
+               choices=ListaOpciones)
+})
+
+#Reactive de informacion en QR en base a seleccion de RadioButtons
+InfoQRReac=reactive({paste0("http://127.0.0.1:7775?",
+                            paste0(PasajeInfo()[as.numeric(input$QRSel),], collapse="_"))})
+
+#Al apretar boton submit:
+##Borrar parte de la UI
+##Graficar QR
+##Generar boton de descarga
 observeEvent(input$SbmtBtn, {
-  #Delete Nav1
-  removeUI(selector="#QRUI > div > div > div:nth-child(1)")
+  #Eliminar UI
   
-  #Generate UI for QR Plot
+  # removeUI(selector="#QRSel")
+  # removeUI(selector="#SbmtBtn")
+  shinyjs::toggleElement(id="QRSel")
+  shinyjs::toggleElement(id="SbmtBtn")
+  
+  
+  #Generar UI para plotear el QR y graficar
   output$QRUi=renderUI({
-    
+    #Renderizar QR
     output$QRPlot=renderPlot({
-      qrcode_gen(dataString=TxtString(), plotQRcode=TRUE)
+      qrcode_gen(dataString=InfoQRReac(), plotQRcode=TRUE)
     })
-    
+    #Graficar QR
     plotOutput(outputId="QRPlot") 
-    
   })
   
-  #Generate Download Button
+  #Generar boton de descarga
   output$PlotSpace=renderUI({
     downloadButton(outputId="DownloadQR", label="Descargar")
   })
   
+  #Generar boton para volver
+  output$VolverSpace=renderUI({
+    actionButton(inputId="Volver", label="Volver")
+  })
+  
 })
 
+#Graficar al presionar boton
 output$DownloadQR=downloadHandler(
   filename="QR.pdf",
   content=function(file){
     pdf(file, width=10, height=10)
-    print(qrcode_gen(dataString=TxtString()))
+    print(qrcode_gen(dataString=InfoQRReac()))
     dev.off()
   }
 )
+
+
+#Pasa nombre de usuario como argumento
+commandArgs=function(...){
+  UserReactive()
+}
+
+#Volver
+observeEvent(input$Volver,{
+  shinyjs::toggleElement(id="QRSel")
+  shinyjs::toggleElement(id="SbmtBtn")
+  
+  shinyjs::toggleElement(id="QRPlot")
+  shinyjs::toggleElement(id="DownloadQR")
+  shinyjs::toggleElement(id="Volver")
+})
 
 
 

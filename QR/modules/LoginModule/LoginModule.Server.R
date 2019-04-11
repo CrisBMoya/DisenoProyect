@@ -1,5 +1,7 @@
 library(RMySQL)
 library(DBI)
+library(shinyalert)
+
 #Disconnect
 try(expr=dbDisconnect(conn=DB), silent=TRUE)
 
@@ -16,19 +18,33 @@ LoginModule.Server=function(input, output, session,
   UsersDF=dbReadTable(conn=DB, name="users")
   
   #Extraer Pass
-  PassDB=UsersDF[match(x=Usuario, UsersDF$Usuario),]$Password
+  PassDB=UsersDF[match(x=Usuario, table=UsersDF$Usuario),]$Password
   
   #Disconnect
   try(expr=dbDisconnect(conn=DB), silent=TRUE)
   
   #Verificar
   if(is.na(PassDB)){
-    list("Usuario o Password incorrectos!")
+    
+    #Error en autenticacion
+    list("0")
   } else {
     if(Clave==PassDB){
-      list("OK")
+      
+      #Detectar si es perfil administrador o usuario normal
+      TipoUsuario=UsersDF[match(x=Usuario, table=UsersDF$Usuario),]$TipoUsuario
+      if(TipoUsuario=="1"){
+        #Ir a pagina validadora
+        list("2")
+        
+      }else if(TipoUsuario=="0"){
+        #Ir a pagina qr
+        list("1")
+      }
     } else {
-      list("Usuario o Password incorrectos!")
+      
+      #Error en autenticacion
+      list("0")
     }
   }
   
