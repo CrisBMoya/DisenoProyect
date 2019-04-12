@@ -23,4 +23,7 @@ if(!requireNamespace("RMySQL", quietly = TRUE)){
 if(!requireNamespace("DBI", quietly = TRUE)){
   install.packages("DBI")
 }
+if(!requireNamespace("shiny", quietly = TRUE)){
+  install.packages("shiny")
+}
 
