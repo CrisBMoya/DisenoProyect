@@ -39,7 +39,7 @@ output$QRList=renderUI({
 })
 
 #Reactive de informacion en QR en base a seleccion de RadioButtons
-InfoQRReac=reactive({paste0("http://127.0.0.1:7775?",
+InfoQRReac=reactive({paste0("http://35.196.145.170:3838/DisenoProject?",
                             paste0(PasajeInfo()[as.numeric(input$QRSel),], collapse="_"))})
 
 #Al apretar boton submit:
