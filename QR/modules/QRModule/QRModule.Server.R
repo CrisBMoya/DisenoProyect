@@ -12,7 +12,7 @@ useShinyjs()
 try(expr=dbDisconnect(conn=DB), silent=TRUE)
 
 #Abrir conexion a database
-DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
+DB=dbConnect(MySQL(), user='root', password='ABCD123456', dbname='qrdb', host='127.0.0.1')
 
 #Extraer info de tabla de pasajes
 PasajesDF=dbReadTable(conn=DB, name="pasajes")

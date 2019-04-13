@@ -65,7 +65,7 @@ Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=c(1:10),
 
 
 #Abrir conexion a database
-DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
+DB=dbConnect(MySQL(), user='root', password='ABCD123456', dbname='qrdb', host='127.0.0.1')
 
 #Exportar tabla a la BD
 dbWriteTable(conn=DB, name="pasajes", value=Pasajes, overwrite=TRUE)
@@ -77,7 +77,7 @@ dbDisconnect(conn=DB)
 ####################
 
 #Abrir conexion a database
-DB=dbConnect(MySQL(), user='root', password='', dbname='qrdb', host='localhost')
+DB=dbConnect(MySQL(), user='root', password='ABCD123456', dbname='qrdb', host='127.0.0.1')
 
 #Listar tablas en la DB
 dbListTables(DB)
