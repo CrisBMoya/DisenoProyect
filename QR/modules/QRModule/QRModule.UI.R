@@ -18,7 +18,8 @@ QRModule.UI=function(id, label="QRModuleUI"){
         column(6,
                uiOutput(outputId="QRUi"),
                uiOutput(outputId="PlotSpace"),
-               uiOutput(outputId="VolverSpace")
+               uiOutput(outputId="VolverSpace"),
+               textOutput(outputId="Debug")
         ),
         column(3)
         

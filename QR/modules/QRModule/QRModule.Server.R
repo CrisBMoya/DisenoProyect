@@ -5,6 +5,14 @@ library(reshape2)
 library(shinyjs)
 library(shinyalert)
 
+#Function para codificar
+source(file="~/DisenoProyect/Functions/CodeString.R")
+
+#Cargar codigo
+CodeNames=readLines(con="~/DisenoProyect/CodeNames.txt")
+Code=c(letters,"_","-", 0:9)
+names(Code)=CodeNames
+
 #Habilitar javascript
 useShinyjs()
 
@@ -39,8 +47,14 @@ output$QRList=renderUI({
 })
 
 #Reactive de informacion en QR en base a seleccion de RadioButtons
+##Code
+output$Debug=renderText({
+  CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSel),], collapse="_"), code=Code)
+  })
+##Actual string
 InfoQRReac=reactive({paste0("http://35.196.145.170:3838/DisenoProject?",
-                            paste0(PasajeInfo()[as.numeric(input$QRSel),], collapse="_"))})
+                            CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSel),], collapse="_"), 
+                                       code=Code))})
 
 #Al apretar boton submit:
 ##Borrar parte de la UI
