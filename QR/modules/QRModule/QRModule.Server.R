@@ -47,10 +47,6 @@ output$QRList=renderUI({
 })
 
 #Reactive de informacion en QR en base a seleccion de RadioButtons
-##Code
-output$Debug=renderText({
-  CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSel),], collapse="_"), code=Code)
-  })
 ##Actual string
 InfoQRReac=reactive({paste0("http://35.196.145.170:3838/DisenoProject?",
                             CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSel),], collapse="_"), 

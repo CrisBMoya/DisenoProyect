@@ -22,7 +22,8 @@ NuevoPasaje=setClass(Class="NuevoPasaje", slots=list(
   Destino="character",
   Fecha="Date",
   Usuario="character",
-  IDUsuario="numeric"
+  IDUsuario="numeric",
+  Status="numeric"
 ))
 
 #Pasar clase S4 a Tabla
@@ -53,8 +54,10 @@ Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=c(1:10),
                                   Destino=c("Conc","Vin","Vin","Ser","Ser","Iqu","Conc","Conc","Iqu","Vin"),
                                   Fecha=as.Date(c(rep(Sys.Date(), 10))), 
                                   Usuario=c("P1","P2","P1","P2","P1","P1","P1","P1","P1","P1"), 
-                                  IDUsuario=c(1,2,1,2,1,1,1,1,1,1)), 
+                                  IDUsuario=c(1,2,1,2,1,1,1,1,1,1),
+                                  Status=c(0,0,0,0,0,0,0,0,0,0)), 
              ClassName="NuevoPasaje")
+
 #Abrir conexion a database
 DB=dbConnect(MySQL(), user='root', password='ABCD123456', dbname='qrdb', host='127.0.0.1')
 
