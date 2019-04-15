@@ -7,6 +7,7 @@ library(shinyalert)
 
 #Function para codificar
 source(file="~/DisenoProyect/Functions/CodeString.R")
+source(file="~/DisenoProyect/QR/modules/QRModule/QRTableSubModule.R", local=TRUE)
 
 #Cargar codigo
 CodeNames=readLines(con="~/DisenoProyect/CodeNames.txt")
@@ -34,6 +35,9 @@ User=commandArgs()$User
 #Match entre usuario logeado y usuarios en DB de pasajes
 PasajeInfo=reactive({PasajesDF[PasajesDF$Usuario %in% User,]})
 
+#Generar tabla con los datos
+output$Tabla=renderUI({TableSubmodule.UI(id="TableSubmoduleUI")})
+
 #Generar lista de opciones de RadioButtons
 ListaOpciones=as.list(1:nrow(PasajeInfo()))
 names(ListaOpciones)=paste0(PasajeInfo()$Origen, " ",
@@ -42,7 +46,7 @@ names(ListaOpciones)=paste0(PasajeInfo()$Origen, " ",
 
 #RadioButtons para elegir el pasaje a generar QR
 output$QRList=renderUI({
-  radioButtons(inputId="QRSel", label="QRList", 
+  radioButtons(inputId="QRSel", label="QRList",
                choices=ListaOpciones)
 })
 
@@ -52,18 +56,97 @@ InfoQRReac=reactive({paste0("http://35.196.145.170:3838/DisenoProject?",
                             CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSel),], collapse="_"), 
                                        code=Code))})
 
+
+############
+#Iterar en Filas
+lapply(1:nrow(PasajeInfo()), function(x){
+  #Iterar en Columnas
+  lapply(1:ncol(PasajeInfo()), function(i){
+    
+    #Generar colnames
+    if(x==1){
+      output[[paste0("Colnames",x,i)]]=renderUI({
+        as.character(colnames(PasajeInfo())[i])
+      })
+    }
+    
+    #Si es la primera columna generar un boton
+    if(i==1){
+      output[[paste0("Row",x,"Col",i)]]=renderUI({
+        actionButton(inputId=paste0("Btn",x,i), label="Generar QR")
+      })
+      
+      #Si no es la primera columna poner informacion
+    } else {
+      output[[paste0("Row",x,"Col",i)]]=renderUI({
+        as.character(PasajeInfo()[x,i])
+      })
+    }
+  })
+})
+############
+
+AllBtn=reactiveVal({
+  
+  BtnValue=unlist(lapply(1:nrow(PasajeInfo()), function(x){
+    unlist(lapply(1:ncol(PasajeInfo()), function(i){
+      input[[paste0("Btn",x,i)]]
+    }))
+  }))
+  
+  which(BtnValue==1)
+  
+})
+
+
+output$ALL=renderText({
+  paste0("Button pressed is ", AllBtn())
+  
+})
+
+# observeEvent(inpu[[paste0("Btn",AllBtn(),1)]],{
+#   AllBtn(0)
+# })
+
+###########
+#Eliminar UI
+# shinyjs::toggleElement(id="QRSel")
+# shinyjs::toggleElement(id="SbmtBtn")
+# shinyjs::toggleElement(id="Tabla")
+# 
+# 
+# #Generar UI para plotear el QR y graficar
+# output$QRUi=renderUI({
+#   #Renderizar QR
+#   output$QRPlot=renderPlot({
+#     qrcode_gen(dataString=InfoQRReac(), plotQRcode=TRUE)
+#   })
+#   #Graficar QR
+#   plotOutput(outputId="QRPlot") 
+# })
+# 
+# #Generar boton de descarga
+# output$PlotSpace=renderUI({
+#   downloadButton(outputId="DownloadQR", label="Descargar")
+# })
+# 
+# #Generar boton para volver
+# output$VolverSpace=renderUI({
+#   actionButton(inputId="Volver", label="Volver")
+# })
+
+#})
+
+
+
 #Al apretar boton submit:
 ##Borrar parte de la UI
 ##Graficar QR
 ##Generar boton de descarga
 observeEvent(input$SbmtBtn, {
   #Eliminar UI
-  
-  # removeUI(selector="#QRSel")
-  # removeUI(selector="#SbmtBtn")
   shinyjs::toggleElement(id="QRSel")
   shinyjs::toggleElement(id="SbmtBtn")
-  
   
   #Generar UI para plotear el QR y graficar
   output$QRUi=renderUI({
@@ -96,7 +179,6 @@ output$DownloadQR=downloadHandler(
     dev.off()
   }
 )
-
 
 #Pasa nombre de usuario como argumento
 commandArgs=function(...){
