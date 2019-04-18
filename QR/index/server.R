@@ -10,6 +10,10 @@ library(shinyalert)
 source(file="~/DisenoProyect/QR/modules/LoginModule/LoginModule.Server.R")
 
 shinyServer(function(input, output, session){
+  
+  #Desactivar boton de registro
+  shinyjs::disable(id="RegBtn")
+  
   #Informacion reactiva
   UserReactive=reactive({input$Usuario})
   ClaveReactive=reactive({input$Clave})

@@ -3,11 +3,11 @@ TableSubmodule.UI=function(id, label="TableSubmoduleUI"){
   
   tags$table(id="Table1",{
     
-    lapply(1:(nrow(PasajeInfo())+1), function(x){
+    lapply(1:(nrow(FormatDF())+1), function(x){
       tags$tr(id=paste0("Row",x),{
         
         
-        lapply(1:ncol(PasajeInfo()), function(i){
+        lapply(1:ncol(FormatDF()), function(i){
           
           if(x==1){
             uiOutput(outputId=paste0("Colnames",x,i), container=tags$th)

@@ -35,8 +35,31 @@ User=commandArgs()$User
 #Match entre usuario logeado y usuarios en DB de pasajes
 PasajeInfo=reactive({PasajesDF[PasajesDF$Usuario %in% User,]})
 
-#Generar tabla con los datos
+#Subset Info de tabla
+FormatDF=reactive({PasajeInfo()[,grep(pattern="Origen|Destino|Fecha", x=colnames(PasajeInfo()))]})
+
+#Generar tabla vacia
 output$Tabla=renderUI({TableSubmodule.UI(id="TableSubmoduleUI")})
+
+#Agregar datos a la tabla vacia
+#Iterar en Filas
+lapply(1:nrow(PasajeInfo()), function(x){
+  #Iterar en Columnas
+  lapply(1:ncol(FormatDF()), function(i){
+    #Generar colnames
+    if(x==1){
+      output[[paste0("Colnames",x,i)]]=renderUI({
+        as.character(colnames(FormatDF())[i])
+      })
+    }
+    
+    #Popular tabla
+    output[[paste0("Row",x,"Col",i)]]=renderUI({
+      as.character(FormatDF()[x,i])
+    })
+    
+  })
+})
 
 #Generar lista de opciones de RadioButtons
 ListaOpciones=as.list(1:nrow(PasajeInfo()))
@@ -44,100 +67,17 @@ names(ListaOpciones)=paste0(PasajeInfo()$Origen, " ",
                             PasajeInfo()$Destino, " ",
                             PasajeInfo()$Fecha)
 
-#RadioButtons para elegir el pasaje a generar QR
-output$QRList=renderUI({
-  radioButtons(inputId="QRSel", label="QRList",
-               choices=ListaOpciones)
+#Dropdown menu para elegir el pasaje a imprimir
+output$QRDropdown=renderUI({
+  selectInput(inputId="QRSelect", label="Seleccionar Pasaje:",
+              choices=ListaOpciones)
 })
 
 #Reactive de informacion en QR en base a seleccion de RadioButtons
 ##Actual string
 InfoQRReac=reactive({paste0("http://35.196.145.170:3838/DisenoProject?",
-                            CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSel),], collapse="_"), 
+                            CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSelect),], collapse="_"), 
                                        code=Code))})
-
-
-############
-#Iterar en Filas
-lapply(1:nrow(PasajeInfo()), function(x){
-  #Iterar en Columnas
-  lapply(1:ncol(PasajeInfo()), function(i){
-    
-    #Generar colnames
-    if(x==1){
-      output[[paste0("Colnames",x,i)]]=renderUI({
-        as.character(colnames(PasajeInfo())[i])
-      })
-    }
-    
-    #Si es la primera columna generar un boton
-    if(i==1){
-      output[[paste0("Row",x,"Col",i)]]=renderUI({
-        actionButton(inputId=paste0("Btn",x,i), label="Generar QR")
-      })
-      
-      #Si no es la primera columna poner informacion
-    } else {
-      output[[paste0("Row",x,"Col",i)]]=renderUI({
-        as.character(PasajeInfo()[x,i])
-      })
-    }
-  })
-})
-############
-
-AllBtn=reactiveVal({
-  
-  BtnValue=unlist(lapply(1:nrow(PasajeInfo()), function(x){
-    unlist(lapply(1:ncol(PasajeInfo()), function(i){
-      input[[paste0("Btn",x,i)]]
-    }))
-  }))
-  
-  which(BtnValue==1)
-  
-})
-
-
-output$ALL=renderText({
-  paste0("Button pressed is ", AllBtn())
-  
-})
-
-# observeEvent(inpu[[paste0("Btn",AllBtn(),1)]],{
-#   AllBtn(0)
-# })
-
-###########
-#Eliminar UI
-# shinyjs::toggleElement(id="QRSel")
-# shinyjs::toggleElement(id="SbmtBtn")
-# shinyjs::toggleElement(id="Tabla")
-# 
-# 
-# #Generar UI para plotear el QR y graficar
-# output$QRUi=renderUI({
-#   #Renderizar QR
-#   output$QRPlot=renderPlot({
-#     qrcode_gen(dataString=InfoQRReac(), plotQRcode=TRUE)
-#   })
-#   #Graficar QR
-#   plotOutput(outputId="QRPlot") 
-# })
-# 
-# #Generar boton de descarga
-# output$PlotSpace=renderUI({
-#   downloadButton(outputId="DownloadQR", label="Descargar")
-# })
-# 
-# #Generar boton para volver
-# output$VolverSpace=renderUI({
-#   actionButton(inputId="Volver", label="Volver")
-# })
-
-#})
-
-
 
 #Al apretar boton submit:
 ##Borrar parte de la UI
@@ -145,8 +85,9 @@ output$ALL=renderText({
 ##Generar boton de descarga
 observeEvent(input$SbmtBtn, {
   #Eliminar UI
-  shinyjs::toggleElement(id="QRSel")
+  shinyjs::toggleElement(id="QRSelect")
   shinyjs::toggleElement(id="SbmtBtn")
+  shinyjs::toggleElement(id="Tabla")
   
   #Generar UI para plotear el QR y graficar
   output$QRUi=renderUI({
@@ -159,13 +100,21 @@ observeEvent(input$SbmtBtn, {
   })
   
   #Generar boton de descarga
-  output$PlotSpace=renderUI({
-    downloadButton(outputId="DownloadQR", label="Descargar")
+  output$DownloadBtnUI=renderUI({
+    downloadButton(outputId="DownloadQR", label="Descargar", icon=icon("download"),
+                   style="color: #fff;
+                   background-color: #428bca;
+                   border-color: #357ebd;
+                   display: inline-block;")
   })
   
   #Generar boton para volver
-  output$VolverSpace=renderUI({
-    actionButton(inputId="Volver", label="Volver")
+  output$VolverBtnUI=renderUI({
+    actionButton(inputId="Volver", label="Volver", icon=icon("arrow-left"), 
+                 style="color: #fff; 
+                        background-color: #d2322d;
+                        border-color: #ac2925;
+                        display: inline-block;")
   })
   
 })
@@ -187,8 +136,9 @@ commandArgs=function(...){
 
 #Volver
 observeEvent(input$Volver,{
-  shinyjs::toggleElement(id="QRSel")
+  shinyjs::toggleElement(id="QRSelect")
   shinyjs::toggleElement(id="SbmtBtn")
+  shinyjs::toggleElement(id="Tabla")
   
   shinyjs::toggleElement(id="QRPlot")
   shinyjs::toggleElement(id="DownloadQR")

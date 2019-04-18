@@ -1,12 +1,14 @@
 library(RMySQL)
 library(DBI)
 library(shinyalert)
+library(shinyjs)
 
 #Disconnect
 try(expr=dbDisconnect(conn=DB), silent=TRUE)
 
 LoginModule.Server=function(input, output, session,
                             Usuario, Clave){
+
   
   #Disconnect
   try(expr=dbDisconnect(conn=DB), silent=TRUE)

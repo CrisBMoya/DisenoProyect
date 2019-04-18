@@ -8,14 +8,27 @@ LoginModule.UI=function(id, label="LoginModuleUI"){
       column(3),
       
       
-      column(6,
+      column(3,
              textInput(inputId="Usuario", label="Usuario", value=""),
              passwordInput(inputId="Clave", label="Clave", value=""),
-             actionButton(inputId="LoginBtn", label="Login"),
-             textOutput(outputId="Msg")
+             splitLayout(cellWidths=c("50%", "50%"),
+               actionButton(inputId="LoginBtn", label="Login", icon=icon("sign-in-alt"), 
+                            style="color: #fff;
+                          background-color: #47a447; 
+                          border-color: #398439;
+                          display: inline-block;"),
+               
+               actionButton(inputId="RegBtn", label="Registrar", icon=icon("file-signature"),
+                            style="color: #fff;
+                   background-color: #428bca;
+                   border-color: #357ebd;
+                   display: inline-block;")
       ),
-      column(3)
-    )
+      
+      textOutput(outputId="Msg")
+    ),
+    column(3)
+  )
   })
 }
 

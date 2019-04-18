@@ -10,11 +10,12 @@ QRModule.UI=function(id, label="QRModuleUI"){
       #Incluir CSS
       includeCSS(path="~/DisenoProyect/Functions/TableCSS/TableCSS.css"),
       
-      tags$h1("QR Module"),
+      tags$h1("Modulo QR"),
       tags$hr(),
       
       fluidRow(
-        column(3,
+        column(3),
+        column(6,
                
                #UI Tabla
                uiOutput(outputId="Tabla"),
@@ -22,17 +23,32 @@ QRModule.UI=function(id, label="QRModuleUI"){
                #Display de Info
                uiOutput(outputId="QRList"),
                
+               #Lista desplegable
+               uiOutput(outputId="QRDropdown"),
+               
                #Generar QR
-               actionButton(inputId="SbmtBtn", label="Aceptar")
+               actionButton(inputId="SbmtBtn", label="Aceptar", icon=icon("arrow-right"), 
+                            style="color: #fff;
+                          background-color: #47a447; 
+                          border-color: #398439;
+                          display: inline-block;"),
+               
+               #Lugar para graficar QR
+               uiOutput(outputId="QRUi")
+               
                
         ),
-        column(6,
-               textOutput(outputId="ALL"),
-               uiOutput(outputId="QRUi"),
-               uiOutput(outputId="PlotSpace"),
-               uiOutput(outputId="VolverSpace")
-        ),
-        column(3)
+        column(3,
+               #Graficar QR
+               uiOutput(outputId="DownloadBtnUI"),
+               
+               #Sepearador
+               tags$div(style="padding:10px"),
+               
+               #Boton regresar
+               uiOutput(outputId="VolverBtnUI")
+               
+        )
       )
     )
   })
