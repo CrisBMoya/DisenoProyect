@@ -75,7 +75,7 @@ output$QRDropdown=renderUI({
 
 #Reactive de informacion en QR en base a seleccion de RadioButtons
 ##Actual string
-InfoQRReac=reactive({paste0("http://35.196.145.170:3838/DisenoProject?",
+InfoQRReac=reactive({paste0("http://34.74.41.56:3838/DisenoProject?",
                             CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSelect),], collapse="_"), 
                                        code=Code))})
 
