@@ -42,12 +42,17 @@ QRModule.UI=function(id, label="QRModuleUI"){
                #Graficar QR
                uiOutput(outputId="DownloadBtnUI"),
                
-               #Sepearador
+               #Separador
+               tags$div(style="padding:10px"),
+               
+               #Boton enviar mail
+               uiOutput(outputId="MailBtn"),
+               
+               #Separador
                tags$div(style="padding:10px"),
                
                #Boton regresar
                uiOutput(outputId="VolverBtnUI")
-               
         )
       )
     )

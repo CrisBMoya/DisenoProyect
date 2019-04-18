@@ -27,3 +27,8 @@ if(!requireNamespace("shiny", quietly = TRUE)){
   install.packages("shiny")
 }
 
+if(!requireNamespace("mailR", quietly = TRUE)){
+  install.packages("mailR")
+}
+
+
