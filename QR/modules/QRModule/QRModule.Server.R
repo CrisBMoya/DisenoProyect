@@ -87,6 +87,11 @@ CodeStringReac=reactive({CodeString(text=paste0(PasajeInfo()[as.numeric(input$QR
 InfoQRReac=reactive({paste0("http://34.74.41.56:3838/DisenoProject?",
                             CodeStringReac())})
 
+#Generar datos para graficar
+PlotQRData=reactive({
+  dataQR=qrcode_gen(dataString=InfoQRReac(), dataOutput=TRUE, plotQRcode=FALSE)
+  dataQR=melt(data=dataQR)
+})
 #Al apretar boton submit:
 ##Borrar parte de la UI
 ##Graficar QR
@@ -101,9 +106,7 @@ observeEvent(input$SbmtBtn, {
   output$QRUi=renderUI({
     #Renderizar QR
     output$QRPlot=renderPlot({
-      dataQR=qrcode_gen(dataString=InfoQRReac(), dataOutput=TRUE, plotQRcode=FALSE)
-      dataQR=melt(data=dataQR)
-      ggplot(data=dataQR, aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
+      ggplot(data=PlotQRData(), aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
         scale_fill_manual(values=c("white", "black")) + coord_fixed() + xlab(label=CodeStringReac()) +
         TemaQR
     })
@@ -146,14 +149,10 @@ observeEvent(input$SbmtBtn, {
 output$DownloadQR=downloadHandler(
   filename="QR.pdf",
   content=function(file){
-    dataQR=qrcode_gen(dataString=InfoQRReac(), dataOutput=TRUE, plotQRcode=FALSE)
-    dataQR=melt(data=dataQR)
-    PlotQR=ggplot(data=dataQR, aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
-      scale_fill_manual(values=c("white", "black")) + coord_fixed() + xlab(label=CodeStringReac()) +
-      TemaQR
-    
     pdf(file, width=10, height=10)
-    print(PlotQR)
+    print(ggplot(data=PlotQRData(), aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
+            scale_fill_manual(values=c("white", "black")) + coord_fixed() + xlab(label=CodeStringReac()) +
+            TemaQR)
     dev.off()
   }
 )
@@ -181,7 +180,9 @@ observeEvent(input$EnviarMail,{
   
   #Imprimir QR en archivo temporal
   pdf(file=paste0(getwd(),"/",CodeStringReac(),".pdf"), width=10, height=10)
-  print(qrcode_gen(dataString=InfoQRReac()))
+  print(ggplot(data=PlotQRData(), aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
+          scale_fill_manual(values=c("white", "black")) + coord_fixed() + xlab(label=CodeStringReac()) +
+          TemaQR)
   dev.off()
   
   #Definir parametros
@@ -213,13 +214,3 @@ observeEvent(input$EnviarMail,{
   
   
 })
-
-# ggplot(data=dataQR, aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
-#   scale_fill_manual(values=c("white", "black")) + coord_fixed() + xlab(label=CodeStringReac) +
-#   theme(axis.text=element_blank(),
-#         legend.position="none",
-#         axis.title.y=element_blank(),
-#         axis.ticks=element_blank(),
-#         panel.grid=element_blank(),
-#         panel.background=element_blank())
-
