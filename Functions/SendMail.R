@@ -1,8 +1,4 @@
 #!/usr/bin/env Rscript
-#Load parser library, install if not present
-if (!requireNamespace("optparse", quietly = TRUE)){
-  install.packages("optparse")
-}
 library(optparse)
 library(mailR)
 
@@ -27,6 +23,7 @@ Tema=ArgumentsList$Tema
 Cuerpo=ArgumentsList$Cuerpo
 RutaPlotQR=ArgumentsList$RutaPlotQR
 
+#Enviar mail
 send.mail(from = "proyectodisenosoftware@gmail.com",
             to = Receptor,
             subject = Tema,
@@ -35,4 +32,7 @@ send.mail(from = "proyectodisenosoftware@gmail.com",
                         user.name = "proyectodisenosoftware", 
                         passwd = "B737528A0F0F", ssl = TRUE),
             authenticate = TRUE,
-            send = TRUE, attach.files=RutaPlotQR)
+            send = TRUE, attach.files=RutaPlotQR
+          )
+#Eliminar QR
+file.remove(paste0(RutaPlotQR))

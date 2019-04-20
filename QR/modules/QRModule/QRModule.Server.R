@@ -1,20 +1,19 @@
-#Library
-library(qrcode)
-library(ggplot2)
-library(reshape2)
-library(shinyjs)
-library(shinyalert)
-library(RMySQL)
-library(DBI)
-
 #Function para codificar
 source(file="~/DisenoProyect/Functions/CodeString.R")
 source(file="~/DisenoProyect/QR/modules/QRModule/QRTableSubModule.R", local=TRUE)
 
 #Cargar codigo
 CodeNames=readLines(con="~/DisenoProyect/CodeNames.txt")
-Code=c(letters,"_","-", 0:9)
+Code=c(letters,"_","-"," ", 0:10)
 names(Code)=CodeNames
+
+#Tema de grafico
+TemaQR=theme(axis.text=element_blank(),
+             legend.position="none",
+             axis.title.y=element_blank(),
+             axis.ticks=element_blank(),
+             panel.grid=element_blank(),
+             panel.background=element_blank())
 
 #Habilitar javascript
 useShinyjs()
@@ -51,21 +50,21 @@ output$Tabla=renderUI({TableSubmodule.UI(id="TableSubmoduleUI")})
 
 #Agregar datos a la tabla vacia
 #Iterar en Filas
-lapply(1:nrow(PasajeInfo()), function(x){
+lapply(1:(nrow(PasajeInfo())+1), function(x){
   #Iterar en Columnas
   lapply(1:ncol(FormatDF()), function(i){
-    #Generar colnames
+    #Generar colnames cuando la fila es igual a 1
     if(x==1){
       output[[paste0("Colnames",x,i)]]=renderUI({
         as.character(colnames(FormatDF())[i])
       })
+    } else {
+      #Popular tabla cuando la fila no es igual a 1. Se usa x-1 pues cuando x es 1 es colnames
+      #Y por lo tanto se estaria saltando la primera fila de la tabla original
+      output[[paste0("Row",x,"Col",i)]]=renderUI({
+        as.character(FormatDF()[(x-1),i])
+      })
     }
-    
-    #Popular tabla
-    output[[paste0("Row",x,"Col",i)]]=renderUI({
-      as.character(FormatDF()[x,i])
-    })
-    
   })
 })
 
@@ -102,7 +101,11 @@ observeEvent(input$SbmtBtn, {
   output$QRUi=renderUI({
     #Renderizar QR
     output$QRPlot=renderPlot({
-      qrcode_gen(dataString=InfoQRReac(), plotQRcode=TRUE)
+      dataQR=qrcode_gen(dataString=InfoQRReac(), dataOutput=TRUE, plotQRcode=FALSE)
+      dataQR=melt(data=dataQR)
+      ggplot(data=dataQR, aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
+        scale_fill_manual(values=c("white", "black")) + coord_fixed() + xlab(label=CodeStringReac()) +
+        TemaQR
     })
     #Graficar QR
     plotOutput(outputId="QRPlot") 
@@ -143,8 +146,14 @@ observeEvent(input$SbmtBtn, {
 output$DownloadQR=downloadHandler(
   filename="QR.pdf",
   content=function(file){
+    dataQR=qrcode_gen(dataString=InfoQRReac(), dataOutput=TRUE, plotQRcode=FALSE)
+    dataQR=melt(data=dataQR)
+    PlotQR=ggplot(data=dataQR, aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
+      scale_fill_manual(values=c("white", "black")) + coord_fixed() + xlab(label=CodeStringReac()) +
+      TemaQR
+    
     pdf(file, width=10, height=10)
-    print(qrcode_gen(dataString=InfoQRReac()))
+    print(PlotQR)
     dev.off()
   }
 )
@@ -182,10 +191,20 @@ observeEvent(input$EnviarMail,{
   Tema=paste0("\"","Codigo QR pasaje ", paste0(PasajeInfo()[as.numeric(input$QRSelect),c("Origen","Destino")],
                                                collapse=" "), "\"")
   #Tema=paste0("\"","asd"," asdasd","\"")
-  Cuerpo='"Cuerpo MSG"'
+  Cuerpo='"En el presente email se adjunta el codigo QR necesario para validar su pasaje al momento de abordar el bus.\n
+  Usted puede imprimir este pasaje o llevar una copia digital en su telefono celular o tablet y mostrar el codigo al auxiliar."'
   RutaPlotQR=paste0(getwd(),"/",CodeStringReac(),".pdf")
   
-  system(paste0("Rscript ", "C:/Users/Tobal/Documents/DisenoProyect/Functions/SendMail.R",
+  #Ruta Script -- absoluta
+  ScriptMail=gsub(pattern="/QR/index", replacement="/Functions/SendMail.R", x=getwd())
+  
+  #Debug
+  # print(Receptor)
+  # print(Tema)
+  # print(RutaPlotQR)
+  
+  #Ejecutar envio de email
+  system(paste0("Rscript ", ScriptMail,
                 " --Receptor ", Receptor,
                 " --Tema ", Tema,
                 " --Cuerpo ", Cuerpo,
@@ -195,4 +214,12 @@ observeEvent(input$EnviarMail,{
   
 })
 
+# ggplot(data=dataQR, aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
+#   scale_fill_manual(values=c("white", "black")) + coord_fixed() + xlab(label=CodeStringReac) +
+#   theme(axis.text=element_blank(),
+#         legend.position="none",
+#         axis.title.y=element_blank(),
+#         axis.ticks=element_blank(),
+#         panel.grid=element_blank(),
+#         panel.background=element_blank())
 

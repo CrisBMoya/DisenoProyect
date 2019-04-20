@@ -2,29 +2,11 @@
 library(RMySQL)
 library(DBI)
 library(tidyverse)
+library(openxlsx)
 
-#Clase NuevoUsuario
-NuevoUsuario=setClass(Class="NuevoUsuario", slots=list(
-  ID="numeric",
-  Nombre="character",
-  Apellido="character",
-  Usuario="character",
-  Email="character",
-  FechaNacimiento="Date",
-  Password="character",
-  TipoUsuario="numeric"
-))
+#Invocar Cases
+source(file="~/DisenoProyect/Functions/Clases.R")
 
-#Clase Pasaje
-NuevoPasaje=setClass(Class="NuevoPasaje", slots=list(
-  ID="numeric",
-  Origen="character",
-  Destino="character",
-  Fecha="Date",
-  Usuario="character",
-  IDUsuario="numeric",
-  Status="numeric"
-))
 
 #Pasar clase S4 a Tabla
 S4DF=function(S4Objetc, ClassName){
@@ -38,25 +20,43 @@ S4DF=function(S4Objetc, ClassName){
 }
 
 #Crear usuarios
-Usuarios=S4DF(S4Objetc=NuevoUsuario(ID=c(1,2), 
-                                    Nombre=c("Prueba","Prueba2"), 
-                                    Apellido=c("Prueba","Prueba"),
-                                    Usuario=c("P1","P2"),
-                                    Email=c("qrdbtest@yopmail.com","otromailrandom@yopmail.com"),
-                                    FechaNacimiento=c(as.Date("2010/01/01"), as.Date("1992/01/01")),
-                                    Password=c("ABC123456","BCD123456"), 
-                                    TipoUsuario=c(0,1)),
-              ClassName="NuevoUsuario")
+Usuarios=openxlsx::read.xlsx(xlsxFile="~/DisenoProyect/DB.xlsx", sheet=1, detectDates=TRUE)
+Usuarios=S4DF(S4Objetc=NuevoUsuario(ID=Usuarios$ID,
+                           Nombre=Usuarios$Nombre,
+                           Apellido=Usuarios$Apellido,
+                           Usuario=Usuarios$Usuario, 
+                           Email=Usuarios$Email,
+                           FechaNacimiento=as.Date(Usuarios$FechaNaciemiento),
+                           Password=as.character(Usuarios$Password),
+                           TipoUsuario=Usuarios$TipoUsuario), ClassName="NuevoUsuario")
+# Usuarios=S4DF(S4Objetc=NuevoUsuario(ID=c(1,2), 
+#                                     Nombre=c("Prueba","Prueba2"), 
+#                                     Apellido=c("Prueba","Prueba"),
+#                                     Usuario=c("P1","P2"),
+#                                     Email=c("qrdbtest@yopmail.com","otromailrandom@yopmail.com"),
+#                                     FechaNacimiento=c(as.Date("2010/01/01"), as.Date("1992/01/01")),
+#                                     Password=c("ABC123456","BCD123456"), 
+#                                     TipoUsuario=c(0,1)),
+#               ClassName="NuevoUsuario")
 
 #Crear Pasajes
-Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=c(1:10), 
-                                  Origen=c(rep(x="Stgo", 10)), 
-                                  Destino=c("Conc","Vin","Vin","Ser","Ser","Iqu","Conc","Conc","Iqu","Vin"),
-                                  Fecha=as.Date(c(rep(Sys.Date(), 10))), 
-                                  Usuario=c("P1","P2","P1","P2","P1","P1","P1","P1","P1","P1"), 
-                                  IDUsuario=c(1,2,1,2,1,1,1,1,1,1),
-                                  Status=c(0,0,0,0,0,0,0,0,0,0)), 
-             ClassName="NuevoPasaje")
+Pasajes=openxlsx::read.xlsx(xlsxFile="~/DisenoProyect/DB.xlsx", sheet=2, detectDates=TRUE)
+Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=Pasajes$ID,
+                          Origen=Pasajes$Origen,
+                          Destino=Pasajes$Destino,
+                          Fecha=as.Date(Pasajes$Fecha),
+                          Usuario=Pasajes$Usuario,
+                          IDUsuario=Pasajes$IDUsuario,
+                          Status=PasajesDF$Status), ClassName="NuevoPasaje")
+
+# Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=c(1:10), 
+#                                   Origen=c(rep(x="Stgo", 10)), 
+#                                   Destino=c("Conc","Vin","Vin","Ser","Ser","Iqu","Conc","Conc","Iqu","Vin"),
+#                                   Fecha=as.Date(c(rep(Sys.Date(), 10))), 
+#                                   Usuario=c("P1","P2","P1","P2","P1","P1","P1","P1","P1","P1"), 
+#                                   IDUsuario=c(1,2,1,2,1,1,1,1,1,1),
+#                                   Status=c(0,0,0,0,0,0,0,0,0,0)), 
+#              ClassName="NuevoPasaje")
 
 #Abrir conexion a database
 DB=dbConnect(MySQL(), user='root', password='ABCD123456', dbname='qrdb', host='127.0.0.1')

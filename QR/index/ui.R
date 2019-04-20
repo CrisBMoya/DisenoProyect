@@ -4,6 +4,10 @@ library(ggplot2)
 library(reshape2)
 library(shinyjs)
 library(shinyalert)
+library(RMySQL)
+library(DBI)
+library(optparse)
+library(mailR)
 
 #UI Index Page
 source(file="~/DisenoProyect/QR/modules/LoginModule/LoginModule.UI.R")

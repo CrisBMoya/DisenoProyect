@@ -6,7 +6,7 @@ useShinyjs()
 
 #Cargar codigo
 CodeNames=readLines(con="~/DisenoProyect/CodeNames.txt")
-Code=c(letters,"_","-", 0:9)
+Code=c(letters,"_","-"," ", 0:10)
 names(Code)=CodeNames
 
 #Si se ingreso a la pagina via link desde QR existiran datos en la URL

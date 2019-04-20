@@ -1,8 +1,3 @@
-library(RMySQL)
-library(DBI)
-library(shinyalert)
-library(shinyjs)
-
 #Disconnect
 try(expr=dbDisconnect(conn=DB), silent=TRUE)
 

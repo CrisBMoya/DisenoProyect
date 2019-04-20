@@ -1,5 +1,4 @@
-
-
+#Modulo UI de QR
 QRModule.UI=function(id, label="QRModuleUI"){
   ns=NS(id)
   

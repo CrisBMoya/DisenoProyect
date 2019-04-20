@@ -1,3 +1,4 @@
+#Funcion para decodificar string
 DecodeString <- function(text, code) {
     textSplit <- unlist(strsplit(text, ""))
     textAsCode <- code[names(code) %in% textSplit]

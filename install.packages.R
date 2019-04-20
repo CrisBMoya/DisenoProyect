@@ -31,4 +31,11 @@ if(!requireNamespace("mailR", quietly = TRUE)){
   install.packages("mailR")
 }
 
+if(!requireNamespace("optparse", quietly = TRUE)){
+  install.packages("optparse")
+}
+
+if(!requireNamespace("mailR", quietly = TRUE)){
+  install.packages("mailR")
+}
 

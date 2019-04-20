@@ -4,6 +4,8 @@ library(ggplot2)
 library(reshape2)
 library(shinyjs)
 library(shinyalert)
+library(RMySQL)
+library(DBI)
 
 
 #QR Server Index Page
