@@ -62,7 +62,7 @@ try(expr=dbDisconnect(conn=DB), silent=TRUE)
 User=commandArgs()$User
 
 #Match entre usuario logeado y usuarios en DB de pasajes
-PasajeInfo=reactive({PasajesDF[PasajesClass@Usuario %in% User,]})
+PasajeInfo=reactive({PasajesDF[PasajesDF$Usuario %in% User,]})
 
 #Extraer Mail del usuario
 MailInfo=reactive({UsuariosDF[match(x=UsuariosDF$ID, table=PasajeInfo()$IDUsuario[1]),]$Email[1]})
@@ -214,9 +214,12 @@ observeEvent(input$EnviarMail,{
   Receptor=MailInfo()
   
   #Receptor="PruebaEmailQR@yopmail.com"
-  Tema=paste0("\"","Codigo QR pasaje ", paste0(PasajeInfo()[as.numeric(input$QRSelect),c("Origen","Destino")],
+  Tema=paste0("\"","Codigo QR pasaje ", 
+              paste0(PasajeInfo()[as.numeric(input$QRSelect),]$Origen," ",
+                     PasajeInfo()[as.numeric(input$QRSelect),]$Destino,
                                                collapse=" "), "\"")
-  #Tema=paste0("\"","asd"," asdasd","\"")
+  
+  
   Cuerpo='"En el presente email se adjunta el codigo QR necesario para validar su pasaje al momento de abordar el bus.\n
   Usted puede imprimir este pasaje o llevar una copia digital en su telefono celular o tablet y mostrar el codigo al auxiliar."'
   RutaPlotQR=paste0(getwd(),"/",CodeStringReac(),".pdf")
