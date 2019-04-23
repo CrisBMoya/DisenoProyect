@@ -41,3 +41,23 @@ sudo gcloud compute firewall-rules create shiny-conn --allow=tcp:3838
 
 #
 sudo apt-get install libssh2-1-dev libgit2-dev libssl-dev libmariadb-client-lgpl-dev libxml2-dev
+
+#
+sudo apt-get install apache2 php mysql-server
+sudo apt-get instal phpmyadmin
+
+sudo phpenmod mcrypt
+sudo phpenmod mbstring
+
+#
+
+sudo chmod 777 -R /srv/shiny-server/
+
+#
+sudo usermod -a -G shiny cr_balladares_m
+
+#
+ln -s /home/cr_balladares_m/DisenoProyect/QR/index /srv/shiny-server/DisenoProject
+
+#Editar /etc/shiny-server/shiny-server.conf
+#run_as cr_balladares_m

@@ -51,3 +51,11 @@ if(!requireNamespace("tidyverse", quietly = TRUE)){
   install.packages("tidyverse")
 }
 
+if(!requireNamespace("rmarkdown", quietly = TRUE)){
+  install.packages("rmarkdown")
+}
+if(!requireNamespace("dplyr", quietly = TRUE)){
+  install.packages("dplyr")
+}
+
+
