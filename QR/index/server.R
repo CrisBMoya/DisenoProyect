@@ -11,6 +11,12 @@ library(DBI)
 #QR Server Index Page
 source(file="~/DisenoProyect/QR/modules/LoginModule/LoginModule.Server.R")
 
+#Invocar clases
+source(file="~/DisenoProyect/Functions/Clases.R")
+
+#S4 a tabla
+source(file="~/DisenoProyect/Functions/S4Tabla.R")
+
 shinyServer(function(input, output, session){
   
   #Desactivar boton de registro

@@ -2,6 +2,12 @@
 source(file="~/DisenoProyect/Functions/CodeString.R")
 source(file="~/DisenoProyect/QR/modules/QRModule/QRTableSubModule.R", local=TRUE)
 
+###################################################################################
+#Arreglos previos:                                                                #
+#En esta seccion se carga funcion para codificar y el Codigo que esto utiliza.    #
+#Tambien el tema de ggplot para el grafico de QR                                  #
+###################################################################################
+
 #Cargar codigo
 CodeNames=readLines(con="~/DisenoProyect/CodeNames.txt")
 Code=c(letters,"_","-"," ", 0:10)
@@ -18,6 +24,10 @@ TemaQR=theme(axis.text=element_blank(),
 #Habilitar javascript
 useShinyjs()
 
+###########################################################################
+#Conectarse a la DB y extraer datos de interes y luego cerrar la conexion #
+###########################################################################
+
 #Desconectar DB en caso de que tenga conexion abierta
 try(expr=dbDisconnect(conn=DB), silent=TRUE)
 
@@ -26,18 +36,33 @@ DB=dbConnect(MySQL(), user='root', password='ABCD123456', dbname='qrdb', host='1
 
 #Extraer info de tabla de pasajes
 PasajesDF=dbReadTable(conn=DB, name="pasajes")
+PasajesDF=S4DF(S4Objetc=NuevoPasaje(ID=PasajesDF$ID, Origen=PasajesDF$Origen, Destino=PasajesDF$Destino, 
+                                    Fecha=as.Date(PasajesDF$Fecha),
+                                    Usuario=PasajesDF$Usuario, IDUsuario=PasajesDF$IDUsuario, 
+                                    Status=PasajesDF$Status), ClassName="NuevoPasaje")
 
 #Extraer info de tabla de usuario
 UsuariosDF=dbReadTable(conn=DB, name="users")
+UsuariosDF=S4DF(S4Objetc=NuevoUsuario(ID=UsuariosDF$ID, Nombre=UsuariosDF$Nombre, 
+                                      Apellido=UsuariosDF$Apellido,
+                                      Usuario=UsuariosDF$Usuario, 
+                                      Email=UsuariosDF$Email, 
+                                      FechaNacimiento=as.Date(UsuariosDF$FechaNacimiento),
+                                      Password=UsuariosDF$Password, 
+                                      TipoUsuario=UsuariosDF$TipoUsuario), ClassName="NuevoUsuario")
 
 #Desconectar DB en caso de que tenga conexion abierta
 try(expr=dbDisconnect(conn=DB), silent=TRUE)
+
+###################################################################################
+#Generar clases usuario, pasaje y QR en base a datos sacados de la base de datos  #
+###################################################################################
 
 #Tomar nombre de usuario desde fuente del source
 User=commandArgs()$User
 
 #Match entre usuario logeado y usuarios en DB de pasajes
-PasajeInfo=reactive({PasajesDF[PasajesDF$Usuario %in% User,]})
+PasajeInfo=reactive({PasajesDF[PasajesClass@Usuario %in% User,]})
 
 #Extraer Mail del usuario
 MailInfo=reactive({UsuariosDF[match(x=UsuariosDF$ID, table=PasajeInfo()$IDUsuario[1]),]$Email[1]})
