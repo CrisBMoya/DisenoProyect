@@ -47,3 +47,7 @@ if(!requireNamespace("openxlsx", quietly = TRUE)){
   install.packages("openxlsx")
 }
 
+if(!requireNamespace("tidyverse", quietly = TRUE)){
+  install.packages("tidyverse")
+}
+

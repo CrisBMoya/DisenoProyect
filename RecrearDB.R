@@ -29,15 +29,6 @@ Usuarios=S4DF(S4Objetc=NuevoUsuario(ID=Usuarios$ID,
                            FechaNacimiento=as.Date(Usuarios$FechaNaciemiento),
                            Password=as.character(Usuarios$Password),
                            TipoUsuario=Usuarios$TipoUsuario), ClassName="NuevoUsuario")
-# Usuarios=S4DF(S4Objetc=NuevoUsuario(ID=c(1,2), 
-#                                     Nombre=c("Prueba","Prueba2"), 
-#                                     Apellido=c("Prueba","Prueba"),
-#                                     Usuario=c("P1","P2"),
-#                                     Email=c("qrdbtest@yopmail.com","otromailrandom@yopmail.com"),
-#                                     FechaNacimiento=c(as.Date("2010/01/01"), as.Date("1992/01/01")),
-#                                     Password=c("ABC123456","BCD123456"), 
-#                                     TipoUsuario=c(0,1)),
-#               ClassName="NuevoUsuario")
 
 #Crear Pasajes
 Pasajes=openxlsx::read.xlsx(xlsxFile="~/DisenoProyect/DB.xlsx", sheet=2, detectDates=TRUE)
@@ -49,16 +40,16 @@ Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=Pasajes$ID,
                           IDUsuario=Pasajes$IDUsuario,
                           Status=Pasajes$Status), ClassName="NuevoPasaje")
 
-# Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=c(1:10), 
-#                                   Origen=c(rep(x="Stgo", 10)), 
-#                                   Destino=c("Conc","Vin","Vin","Ser","Ser","Iqu","Conc","Conc","Iqu","Vin"),
-#                                   Fecha=as.Date(c(rep(Sys.Date(), 10))), 
-#                                   Usuario=c("P1","P2","P1","P2","P1","P1","P1","P1","P1","P1"), 
-#                                   IDUsuario=c(1,2,1,2,1,1,1,1,1,1),
-#                                   Status=c(0,0,0,0,0,0,0,0,0,0)), 
-#              ClassName="NuevoPasaje")
-
 #Abrir conexion a database
+DB=dbConnect(MySQL(), user='root', password='ABCD123456', host='127.0.0.1')
+
+#Recrear DB - habra un error si ya existe, el cual sera ignorado
+try(expr=dbSendQuery(conn=DB, statement="CREATE DATABASE qrdb;"), silent=TRUE)
+
+#Desconectar
+dbDisconnect(conn=DB)
+
+#Abrir conexion a database considerando la nueva DB
 DB=dbConnect(MySQL(), user='root', password='ABCD123456', dbname='qrdb', host='127.0.0.1')
 
 #Exportar tabla a la BD
