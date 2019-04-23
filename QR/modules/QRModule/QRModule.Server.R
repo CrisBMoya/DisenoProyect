@@ -109,7 +109,7 @@ output$QRDropdown=renderUI({
 ##Actual string
 CodeStringReac=reactive({CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSelect),], collapse="_"), 
                                     code=Code)})
-InfoQRReac=reactive({paste0("http://34.74.41.56:3838/DisenoProject?",
+InfoQRReac=reactive({paste0("http://34.73.108.19:3838/DisenoProject?",
                             CodeStringReac())})
 
 #Generar datos para graficar
