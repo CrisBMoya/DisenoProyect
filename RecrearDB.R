@@ -47,7 +47,7 @@ Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=Pasajes$ID,
                           Fecha=as.Date(Pasajes$Fecha),
                           Usuario=Pasajes$Usuario,
                           IDUsuario=Pasajes$IDUsuario,
-                          Status=PasajesDF$Status), ClassName="NuevoPasaje")
+                          Status=Pasajes$Status), ClassName="NuevoPasaje")
 
 # Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=c(1:10), 
 #                                   Origen=c(rep(x="Stgo", 10)), 
