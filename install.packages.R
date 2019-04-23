@@ -35,7 +35,15 @@ if(!requireNamespace("optparse", quietly = TRUE)){
   install.packages("optparse")
 }
 
+if(!requireNamespace("rJava", quietly = TRUE)){
+  install.packages("rJava")
+}
+
 if(!requireNamespace("mailR", quietly = TRUE)){
   install.packages("mailR")
+}
+
+if(!requireNamespace("openxlsx", quietly = TRUE)){
+  install.packages("openxlsx")
 }
 
