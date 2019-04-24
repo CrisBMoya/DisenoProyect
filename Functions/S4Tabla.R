@@ -6,5 +6,5 @@ S4DF=function(S4Objetc, ClassName){
   for(i in SlotNames){
     SlotList[[i]]=slot(object=S4Objetc, name=i)
   }
-  return(as.data.frame(SlotList))
+  return(data.frame(SlotList, stringsAsFactors=FALSE))
 }

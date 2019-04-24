@@ -17,6 +17,10 @@ source(file="~/DisenoProyect/Functions/Clases.R")
 #S4 a tabla
 source(file="~/DisenoProyect/Functions/S4Tabla.R")
 
+#Extraer info DB
+source(file="~/DisenoProyect/Functions/ConsultasDB.R")
+
+#Server
 shinyServer(function(input, output, session){
   
   #Desactivar boton de registro

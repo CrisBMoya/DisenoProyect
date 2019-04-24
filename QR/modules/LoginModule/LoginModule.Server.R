@@ -4,15 +4,18 @@ try(expr=dbDisconnect(conn=DB), silent=TRUE)
 LoginModule.Server=function(input, output, session,
                             Usuario, Clave){
 
-  
-  #Disconnect
-  try(expr=dbDisconnect(conn=DB), silent=TRUE)
-  
-  #Abrir conexion a database
-  DB=dbConnect(MySQL(), user='root', password='ABCD123456', dbname='qrdb', host='127.0.0.1')
-  
   #Extraer info de tabla
-  UsersDF=dbReadTable(conn=DB, name="users")
+  UsersDF=ConsultaDB(DBName="qrdb", Element="users")
+  UsersDF=S4DF(S4Objetc=NuevoUsuario(ID=UsersDF$ID,
+                                     Nombre=UsersDF$Nombre,
+                                     Apellido=UsersDF$Apellido,
+                                     Usuario=UsersDF$Usuario,
+                                     Email=UsersDF$Email,
+                                     FechaNacimiento=as.Date(UsersDF$FechaNacimiento),
+                                     Password=UsersDF$Password,
+                                     TipoUsuario=UsersDF$TipoUsuario
+                                       ), 
+               ClassName="NuevoUsuario")
   
   #Extraer Pass
   PassDB=UsersDF[match(x=Usuario, table=UsersDF$Usuario),]$Password

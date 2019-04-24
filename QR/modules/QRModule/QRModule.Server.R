@@ -28,21 +28,15 @@ useShinyjs()
 #Conectarse a la DB y extraer datos de interes y luego cerrar la conexion #
 ###########################################################################
 
-#Desconectar DB en caso de que tenga conexion abierta
-try(expr=dbDisconnect(conn=DB), silent=TRUE)
-
-#Abrir conexion a database
-DB=dbConnect(MySQL(), user='root', password='ABCD123456', dbname='qrdb', host='127.0.0.1')
-
 #Extraer info de tabla de pasajes
-PasajesDF=dbReadTable(conn=DB, name="pasajes")
+PasajesDF=ConsultaDB(DBName="qrdb", Element="pasajes")
 PasajesDF=S4DF(S4Objetc=NuevoPasaje(ID=PasajesDF$ID, Origen=PasajesDF$Origen, Destino=PasajesDF$Destino, 
                                     Fecha=as.Date(PasajesDF$Fecha),
                                     Usuario=PasajesDF$Usuario, IDUsuario=PasajesDF$IDUsuario, 
                                     Status=PasajesDF$Status), ClassName="NuevoPasaje")
 
 #Extraer info de tabla de usuario
-UsuariosDF=dbReadTable(conn=DB, name="users")
+UsuariosDF=ConsultaDB(DBName="qrdb", Element="users")
 UsuariosDF=S4DF(S4Objetc=NuevoUsuario(ID=UsuariosDF$ID, Nombre=UsuariosDF$Nombre, 
                                       Apellido=UsuariosDF$Apellido,
                                       Usuario=UsuariosDF$Usuario, 
@@ -51,8 +45,6 @@ UsuariosDF=S4DF(S4Objetc=NuevoUsuario(ID=UsuariosDF$ID, Nombre=UsuariosDF$Nombre
                                       Password=UsuariosDF$Password, 
                                       TipoUsuario=UsuariosDF$TipoUsuario), ClassName="NuevoUsuario")
 
-#Desconectar DB en caso de que tenga conexion abierta
-try(expr=dbDisconnect(conn=DB), silent=TRUE)
 
 ###################################################################################
 #Generar clases usuario, pasaje y QR en base a datos sacados de la base de datos  #
@@ -226,12 +218,7 @@ observeEvent(input$EnviarMail,{
   
   #Ruta Script -- absoluta
   ScriptMail=gsub(pattern="/QR/index", replacement="/Functions/SendMail.R", x=getwd())
-  
-  #Debug
-  # print(Receptor)
-  # print(Tema)
-  # print(RutaPlotQR)
-  
+
   #Ejecutar envio de email
   system(paste0("Rscript ", ScriptMail,
                 " --Receptor ", Receptor,
