@@ -9,7 +9,7 @@ source(file="~/DisenoProyect/QR/modules/QRModule/QRTableSubModule.R", local=TRUE
 ###################################################################################
 
 #Cargar codigo
-CodeNames=readLines(con="~/DisenoProyect/CodeNames.txt")
+CodeNames=readLines(con="~/DisenoProyect/Otros/CodeNames.txt")
 Code=c(letters,"_","-"," ", 0:10)
 names(Code)=CodeNames
 

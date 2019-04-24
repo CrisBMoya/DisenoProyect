@@ -20,7 +20,7 @@ S4DF=function(S4Objetc, ClassName){
 }
 
 #Crear usuarios
-Usuarios=openxlsx::read.xlsx(xlsxFile="~/DisenoProyect/DB.xlsx", sheet=1, detectDates=TRUE)
+Usuarios=openxlsx::read.xlsx(xlsxFile="~/DisenoProyect/Otros/DB.xlsx", sheet=1, detectDates=TRUE)
 Usuarios=S4DF(S4Objetc=NuevoUsuario(ID=Usuarios$ID,
                            Nombre=Usuarios$Nombre,
                            Apellido=Usuarios$Apellido,
@@ -31,7 +31,7 @@ Usuarios=S4DF(S4Objetc=NuevoUsuario(ID=Usuarios$ID,
                            TipoUsuario=Usuarios$TipoUsuario), ClassName="NuevoUsuario")
 
 #Crear Pasajes
-Pasajes=openxlsx::read.xlsx(xlsxFile="~/DisenoProyect/DB.xlsx", sheet=2, detectDates=TRUE)
+Pasajes=openxlsx::read.xlsx(xlsxFile="~/DisenoProyect/Otros/DB.xlsx", sheet=2, detectDates=TRUE)
 Pasajes=S4DF(S4Objetc=NuevoPasaje(ID=Pasajes$ID,
                           Origen=Pasajes$Origen,
                           Destino=Pasajes$Destino,

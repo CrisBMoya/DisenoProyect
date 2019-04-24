@@ -5,7 +5,7 @@ source(file="~/DisenoProyect/Functions/ValidarQR.R")
 useShinyjs()
 
 #Cargar codigo
-CodeNames=readLines(con="~/DisenoProyect/CodeNames.txt")
+CodeNames=readLines(con="~/DisenoProyect/Otros/CodeNames.txt")
 Code=c(letters,"_","-"," ", 0:10)
 names(Code)=CodeNames
 
