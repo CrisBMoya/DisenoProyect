@@ -45,7 +45,6 @@ UsuariosDF=S4DF(S4Objetc=NuevoUsuario(ID=UsuariosDF$ID, Nombre=UsuariosDF$Nombre
                                       Password=UsuariosDF$Password, 
                                       TipoUsuario=UsuariosDF$TipoUsuario), ClassName="NuevoUsuario")
 
-
 ###################################################################################
 #Generar clases usuario, pasaje y QR en base a datos sacados de la base de datos  #
 ###################################################################################
@@ -57,7 +56,7 @@ User=commandArgs()$User
 PasajeInfo=reactive({PasajesDF[PasajesDF$Usuario %in% User,]})
 
 #Extraer Mail del usuario
-MailInfo=reactive({UsuariosDF[match(x=UsuariosDF$ID, table=PasajeInfo()$IDUsuario[1]),]$Email[1]})
+MailInfo=reactive({UsuariosDF[match(x=PasajeInfo()$IDUsuario[1], table=UsuariosDF$ID),]$Email[1]})
 
 #Subset Info de tabla
 FormatDF=reactive({PasajeInfo()[,grep(pattern="Origen|Destino|Fecha", x=colnames(PasajeInfo()))]})
@@ -194,6 +193,19 @@ observeEvent(input$Volver,{
 
 #Enviar mail
 observeEvent(input$EnviarMail,{
+  #Avisar de mail enviado
+  shinyalert(title = "Correo enviado!",
+    closeOnEsc = TRUE,
+    closeOnClickOutside = FALSE,
+    html = FALSE,
+    type = "success",
+    showConfirmButton = TRUE,
+    showCancelButton = FALSE,
+    confirmButtonText = "OK",
+    confirmButtonCol = "#AEDEF4",
+    timer = 0,
+    imageUrl = "",
+    animation = TRUE)
   
   #Imprimir QR en archivo temporal
   pdf(file=paste0(getwd(),"/",CodeStringReac(),".pdf"), width=10, height=10)
@@ -209,7 +221,7 @@ observeEvent(input$EnviarMail,{
   Tema=paste0("\"","Codigo QR pasaje ", 
               paste0(PasajeInfo()[as.numeric(input$QRSelect),]$Origen," ",
                      PasajeInfo()[as.numeric(input$QRSelect),]$Destino,
-                                               collapse=" "), "\"")
+                     collapse=" "), "\"")
   
   
   Cuerpo='"En el presente email se adjunta el codigo QR necesario para validar su pasaje al momento de abordar el bus.\n
@@ -218,7 +230,7 @@ observeEvent(input$EnviarMail,{
   
   #Ruta Script -- absoluta
   ScriptMail=gsub(pattern="/QR/index", replacement="/Functions/SendMail.R", x=getwd())
-
+  
   #Ejecutar envio de email
   system(paste0("Rscript ", ScriptMail,
                 " --Receptor ", Receptor,

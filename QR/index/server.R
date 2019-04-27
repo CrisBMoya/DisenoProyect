@@ -79,7 +79,7 @@ shinyServer(function(input, output, session){
       shinyalert(
         inputId="ClaveOKAdmin",
         title = "Correcto:",
-        text = "Login exitoso! - Adm",
+        text = "Login de auxiliar exitoso!",
         closeOnEsc = TRUE,
         closeOnClickOutside = FALSE,
         html = FALSE,
