@@ -9,7 +9,7 @@ QRModule.UI=function(id, label="QRModuleUI"){
       #Incluir CSS
       includeCSS(path="~/DisenoProyect/Functions/TableCSS/TableCSS.css"),
       
-      tags$h1("Generador de código GoBus"),
+      tags$h1("Generador de cÃ³digo GoBus"),
       tags$hr(),
       
       fluidRow(

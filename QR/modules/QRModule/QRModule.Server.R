@@ -217,7 +217,7 @@ observeEvent(input$Volver,{
 #Enviar mail
 observeEvent(input$EnviarMail,{
   #Avisar de mail enviado
-  shinyalert(title = "Código GoBus enviado!",
+  shinyalert(title = "CÃ³digo GoBus enviado!",
              text="Porfavor revisa tu mail!",
              closeOnEsc = TRUE,
              closeOnClickOutside = FALSE,

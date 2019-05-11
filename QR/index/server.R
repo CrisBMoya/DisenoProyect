@@ -79,7 +79,7 @@ shinyServer(function(input, output, session){
       shinyalert(
         inputId="ClaveOKAdmin",
         title = "Bienvenido a GoBus!",
-        text = "Tu aplicación compañera de viajes!",
+        text = "Tu aplicacion compañera de viajes!",
         closeOnEsc = TRUE,
         closeOnClickOutside = FALSE,
         html = FALSE,

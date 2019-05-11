@@ -15,7 +15,7 @@ LoginModule.UI=function(id, label="LoginModuleUI"){
                           border-color: #398439;
                           display: inline-block;"),
                          
-                         actionButton(inputId="RegBtn", label="Regístrate", icon=icon("file-signature"),
+                         actionButton(inputId="RegBtn", label="RegÃ­strate", icon=icon("file-signature"),
                                       style="color: #fff;
                    background-color: #428bca;
                    border-color: #357ebd;
