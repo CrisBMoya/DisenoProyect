@@ -9,12 +9,19 @@ QRModule.UI=function(id, label="QRModuleUI"){
       #Incluir CSS
       includeCSS(path="~/DisenoProyect/Functions/TableCSS/TableCSS.css"),
       
-      tags$h1("Modulo QR"),
+      tags$h1("Generador de código GoBus"),
       tags$hr(),
       
       fluidRow(
-        column(3),
         column(6,
+               
+               #Titulo Tabla
+               tags$b(id="RevisaTitulo",
+                      "Revisa tus pasajes:"),
+               
+               #Titulo QR
+               tags$b(id="QRTitulo", style="display:none;",
+                      "Descarga o imprime este QR:"),
                
                #UI Tabla
                uiOutput(outputId="Tabla"),
@@ -26,33 +33,34 @@ QRModule.UI=function(id, label="QRModuleUI"){
                uiOutput(outputId="QRDropdown"),
                
                #Generar QR
-               actionButton(inputId="SbmtBtn", label="Aceptar", icon=icon("arrow-right"), 
+               actionButton(inputId="SbmtBtn", label="Generar QR", icon=icon("arrow-right"), 
                             style="color: #fff;
                           background-color: #47a447; 
                           border-color: #398439;
                           display: inline-block;"),
-               
-               #Lugar para graficar QR
-               uiOutput(outputId="QRUi")
-               
-               
+               verticalLayout(
+                 #Lugar para graficar QR
+                 uiOutput(outputId="QRUi"),
+                 
+                 splitLayout(
+                   #Graficar QR
+                   uiOutput(outputId="DownloadBtnUI"),
+                   #Separador
+                   tags$div(style="padding:10px"),
+                   
+                   #Boton enviar mail
+                   uiOutput(outputId="MailBtn"),
+                   
+                   #Separador
+                   tags$div(style="padding:10px"),
+                   
+                   #Boton regresar
+                   uiOutput(outputId="VolverBtnUI")
+                 )
+               )
         ),
-        column(3,
-               #Graficar QR
-               uiOutput(outputId="DownloadBtnUI"),
-               
-               #Separador
-               tags$div(style="padding:10px"),
-               
-               #Boton enviar mail
-               uiOutput(outputId="MailBtn"),
-               
-               #Separador
-               tags$div(style="padding:10px"),
-               
-               #Boton regresar
-               uiOutput(outputId="VolverBtnUI")
-        )
+        column(3),
+        column(3)
       )
     )
   })

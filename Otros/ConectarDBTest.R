@@ -91,5 +91,5 @@ UsersDF=dbReadTable(conn=DB, name="users")
 #Exportar tabla a la BD
 dbWriteTable(conn=DB, name="users", value=tempDF, overwrite=TRUE)
 
-
-
+temp=dbReadTable(conn=DB, name="pasajes")
+temp[temp$Usuario=="CBalladares",]

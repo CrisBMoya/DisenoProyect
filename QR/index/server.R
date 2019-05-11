@@ -40,8 +40,8 @@ shinyServer(function(input, output, session){
       #Popup de login exitoso
       shinyalert(
         inputId="ClaveOKNormal",
-        title = "Correcto:",
-        text = "Login exitoso!",
+        title = "Bienvenido a GoBus!",
+        text = "Tu aplicación compañera de viajes!",
         closeOnEsc = TRUE,
         closeOnClickOutside = FALSE,
         html = FALSE,
@@ -58,15 +58,15 @@ shinyServer(function(input, output, session){
       #Si la clave es incorrecta enviar error
       shinyalert(
         inputId="ErrorClave",
-        title = "Error:",
-        text = "Clave o usuario incorrectos!",
+        #title = "Error:",
+        text = "Debes ingresar un usuario y clave correctos!",
         closeOnEsc = TRUE,
         closeOnClickOutside = FALSE,
         html = FALSE,
         type = "error",
         showConfirmButton = TRUE,
         showCancelButton = FALSE,
-        confirmButtonText = "OK",
+        confirmButtonText = "Aceptar",
         confirmButtonCol = "#AEDEF4",
         timer = 0,
         imageUrl = "",
@@ -78,15 +78,15 @@ shinyServer(function(input, output, session){
       #Popup de login exitoso
       shinyalert(
         inputId="ClaveOKAdmin",
-        title = "Correcto:",
-        text = "Login de auxiliar exitoso!",
+        title = "Bienvenido a GoBus!",
+        text = "Tu aplicación compañera de viajes!",
         closeOnEsc = TRUE,
         closeOnClickOutside = FALSE,
         html = FALSE,
         type = "success",
         showConfirmButton = TRUE,
         showCancelButton = FALSE,
-        confirmButtonText = "OK",
+        confirmButtonText = "Aceptar",
         confirmButtonCol = "#AEDEF4",
         timer = 0,
         imageUrl = "",

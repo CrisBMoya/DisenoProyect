@@ -53,13 +53,20 @@ UsuariosDF=S4DF(S4Objetc=NuevoUsuario(ID=UsuariosDF$ID, Nombre=UsuariosDF$Nombre
 User=commandArgs()$User
 
 #Match entre usuario logeado y usuarios en DB de pasajes
-PasajeInfo=reactive({PasajesDF[PasajesDF$Usuario %in% User,]})
+PasajeInfo=reactive({
+  DFPasaje=PasajesDF[PasajesDF$Usuario %in% User,]
+  DFPasaje=DFPasaje[order(DFPasaje$Fecha, decreasing=FALSE),]
+  })
 
 #Extraer Mail del usuario
 MailInfo=reactive({UsuariosDF[match(x=PasajeInfo()$IDUsuario[1], table=UsuariosDF$ID),]$Email[1]})
 
 #Subset Info de tabla
-FormatDF=reactive({PasajeInfo()[,grep(pattern="Origen|Destino|Fecha", x=colnames(PasajeInfo()))]})
+FormatDF=reactive({
+  DFPasaje=PasajeInfo()[,grep(pattern="Origen|Destino|Fecha", x=colnames(PasajeInfo()))]
+  DFPasaje$Fecha=format(x=DFPasaje$Fecha, "%d %m %Y")
+  DFPasaje
+})
 
 #Generar tabla vacia
 output$Tabla=renderUI({TableSubmodule.UI(id="TableSubmoduleUI")})
@@ -85,14 +92,14 @@ lapply(1:(nrow(PasajeInfo())+1), function(x){
 })
 
 #Generar lista de opciones de RadioButtons
-ListaOpciones=as.list(1:nrow(PasajeInfo()))
-names(ListaOpciones)=paste0(PasajeInfo()$Origen, " ",
-                            PasajeInfo()$Destino, " ",
-                            PasajeInfo()$Fecha)
+ListaOpciones=as.list(1:nrow(FormatDF()))
+names(ListaOpciones)=paste0(FormatDF()$Origen, " ",
+                            FormatDF()$Destino, " ",
+                            FormatDF()$Fecha)
 
 #Dropdown menu para elegir el pasaje a imprimir
 output$QRDropdown=renderUI({
-  selectInput(inputId="QRSelect", label="Seleccionar Pasaje:",
+  selectInput(inputId="QRSelect", label="Selecciona tu pasaje:",
               choices=ListaOpciones)
 })
 
@@ -100,6 +107,7 @@ output$QRDropdown=renderUI({
 ##Actual string
 CodeStringReac=reactive({CodeString(text=paste0(PasajeInfo()[as.numeric(input$QRSelect),], collapse="_"), 
                                     code=Code)})
+
 InfoQRReac=reactive({paste0("http://35.198.52.105:3838/DisenoProject?",
                             CodeStringReac())})
 
@@ -117,6 +125,8 @@ observeEvent(input$SbmtBtn, {
   shinyjs::toggleElement(id="QRSelect")
   shinyjs::toggleElement(id="SbmtBtn")
   shinyjs::toggleElement(id="Tabla")
+  shinyjs::toggleElement(id="RevisaTitulo")
+  shinyjs::toggleElement(id="QRTitulo")
   
   #Generar UI para plotear el QR y graficar
   output$QRUi=renderUI({
@@ -161,9 +171,18 @@ observeEvent(input$SbmtBtn, {
   
 })
 
+#Cambiar nombre de pdf acorde a opcion seleccionada
+NumericSelecReactive=reactive({
+  paste0(paste0(PasajeInfo()[as.numeric(input$QRSelect),
+                             grep(pattern="Origen|Destino|Fecha", x=colnames(PasajeInfo()))], collapse="_"),
+         ".pdf")
+  })
+
 #Graficar al presionar boton
 output$DownloadQR=downloadHandler(
-  filename="QR.pdf",
+  filename=function(x){
+    return(paste0(NumericSelecReactive()))
+    },
   content=function(file){
     pdf(file, width=10, height=10)
     print(ggplot(data=PlotQRData(), aes(x=Var1, y=Var2, fill=factor(value))) + geom_raster() +
@@ -188,24 +207,29 @@ observeEvent(input$Volver,{
   shinyjs::toggleElement(id="DownloadQR")
   shinyjs::toggleElement(id="EnviarMail")
   shinyjs::toggleElement(id="Volver")
+  
+  shinyjs::toggleElement(id="RevisaTitulo")
+  
+  shinyjs::toggleElement(id="QRTitulo")
 })
 
 
 #Enviar mail
 observeEvent(input$EnviarMail,{
   #Avisar de mail enviado
-  shinyalert(title = "Correo enviado!",
-    closeOnEsc = TRUE,
-    closeOnClickOutside = FALSE,
-    html = FALSE,
-    type = "success",
-    showConfirmButton = TRUE,
-    showCancelButton = FALSE,
-    confirmButtonText = "OK",
-    confirmButtonCol = "#AEDEF4",
-    timer = 0,
-    imageUrl = "",
-    animation = TRUE)
+  shinyalert(title = "Código GoBus enviado!",
+             text="Porfavor revisa tu mail!",
+             closeOnEsc = TRUE,
+             closeOnClickOutside = FALSE,
+             html = FALSE,
+             type = "success",
+             showConfirmButton = TRUE,
+             showCancelButton = FALSE,
+             confirmButtonText = "OK",
+             confirmButtonCol = "#AEDEF4",
+             timer = 0,
+             imageUrl = "",
+             animation = TRUE)
   
   #Imprimir QR en archivo temporal
   pdf(file=paste0(getwd(),"/",CodeStringReac(),".pdf"), width=10, height=10)

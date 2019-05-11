@@ -28,6 +28,14 @@ shinyUI(fluidPage(
   uiOutput(outputId="QRModuleUI"),
   
   #Validacion QR
-  uiOutput(outputId="ValidateModuleUI")
+  uiOutput(outputId="ValidateModuleUI"),
+  
+  #Desarrollado por
+  tags$p(align="right", 
+  style="position:absolute;
+  bottom:8px;
+  right:16px;
+  font-size: 10px;","Aplicación desarrollada por grupo Ishikawa Boys")
+  
   
 ))
