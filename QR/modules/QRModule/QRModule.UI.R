@@ -45,15 +45,10 @@ QRModule.UI=function(id, label="QRModuleUI"){
                  splitLayout(
                    #Graficar QR
                    uiOutput(outputId="DownloadBtnUI"),
-                   #Separador
-                   tags$div(style="padding:10px"),
-                   
+
                    #Boton enviar mail
                    uiOutput(outputId="MailBtn"),
-                   
-                   #Separador
-                   tags$div(style="padding:10px"),
-                   
+
                    #Boton regresar
                    uiOutput(outputId="VolverBtnUI")
                  )
@@ -65,4 +60,5 @@ QRModule.UI=function(id, label="QRModuleUI"){
     )
   })
 }
+100-50
 
